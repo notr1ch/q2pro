@@ -54,7 +54,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #define CONST_STR_LEN(x) x, x ? sizeof(x) - 1 : 0
 
+#ifndef __STRINGIFY
 #define __STRINGIFY(x)  #x
+#endif
+
 #define STRINGIFY(x)    __STRINGIFY(x)
 
 typedef struct {

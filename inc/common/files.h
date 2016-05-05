@@ -175,9 +175,7 @@ int FS_ValidatePath(const char *s);
 
 void FS_SanitizeFilenameVariable(cvar_t *var);
 
-#ifdef _WIN32
 char *FS_ReplaceSeparators(char *s, int separator);
-#endif
 
 void FS_File_g(const char *path, const char *ext, unsigned flags, genctx_t *ctx);
 

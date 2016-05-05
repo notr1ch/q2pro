@@ -30,11 +30,11 @@ MKDIR ?= mkdir -p
 
 CFLAGS ?= -O2 -Wall -g -MMD $(INCLUDES)
 RCFLAGS ?=
-LDFLAGS ?=
+LDFLAGS ?= -static -static-libgcc -static-libstdc++
 LIBS ?=
 
 CFLAGS_s := -iquote./inc
-CFLAGS_c := -iquote./inc
+CFLAGS_c := -iquote./inc -DUSE_AC_CLIENT
 CFLAGS_g := -iquote./inc -fno-strict-aliasing
 
 RCFLAGS_s :=
@@ -59,7 +59,7 @@ ifdef CONFIG_WINDOWS
 
     # Mark images as DEP and ASLR compatible
     LDFLAGS_s += -Wl,--nxcompat,--dynamicbase
-    LDFLAGS_c += -Wl,--nxcompat,--dynamicbase
+    LDFLAGS_c += -Wl,--nxcompat
     LDFLAGS_g += -Wl,--nxcompat,--dynamicbase
 
     # Force relocations to be generated for 32-bit .exe files and work around
@@ -67,7 +67,6 @@ ifdef CONFIG_WINDOWS
     # relocations are enabled.
     ifeq ($(CPU),x86)
         LDFLAGS_s += -Wl,--pic-executable,--entry,_mainCRTStartup
-        LDFLAGS_c += -Wl,--pic-executable,--entry,_WinMainCRTStartup
     endif
 else
     # Disable x86 features on other arches
@@ -253,7 +252,7 @@ OBJS_g := \
 ### Configuration Options ###
 
 ifdef CONFIG_HTTP
-    CURL_CFLAGS ?= $(shell pkg-config libcurl --cflags)
+    CURL_CFLAGS ?= $(shell pkg-config libcurl --cflags) -DCURL_STATICLIB
     CURL_LIBS ?= $(shell pkg-config libcurl --libs)
     CFLAGS_c += -DUSE_CURL=1 $(CURL_CFLAGS)
     LIBS_c += $(CURL_LIBS)
@@ -438,6 +437,7 @@ endif
 
 ifdef CONFIG_WINDOWS
     OBJS_c += src/windows/client.o
+    OBJS_c += src/windows/ac.o
 
     ifdef CONFIG_DIRECT_INPUT
         CFLAGS_c += -DUSE_DINPUT=1

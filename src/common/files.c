@@ -220,7 +220,6 @@ all generated files (savegames, screenshots, demos, config files) will be saved 
 
 */
 
-#ifdef _WIN32
 char *FS_ReplaceSeparators(char *s, int separator)
 {
     char *p;
@@ -235,7 +234,6 @@ char *FS_ReplaceSeparators(char *s, int separator)
 
     return s;
 }
-#endif
 
 static inline qboolean validate_char(int c)
 {
@@ -2475,9 +2473,7 @@ static void q_printf(2, 3) add_game_dir(unsigned mode, const char *fmt, ...)
         return;
     }
 
-#ifdef _WIN32
     FS_ReplaceSeparators(fs_gamedir, '/');
-#endif
 
     // add the directory to the search path
     search = FS_Malloc(sizeof(searchpath_t) + len);
@@ -3504,9 +3500,7 @@ void FS_Restart(qboolean total)
         // just change gamedir
         free_game_paths();
         Q_snprintf(fs_gamedir, sizeof(fs_gamedir), "%s/"BASEGAME, sys_basedir->string);
-#ifdef _WIN32
         FS_ReplaceSeparators(fs_gamedir, '/');
-#endif
     }
 
     setup_game_paths();
